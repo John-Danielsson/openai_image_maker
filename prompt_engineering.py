@@ -137,14 +137,14 @@ Just answer with the word "READ".
 """
 
 # The brackets in this prompt will be filled with the user's prompt.
-prompt = """
+PROMPT = """
 Great. Now I want you to ACT as a professional prompt engineer. You will use a rich and descriptive language when describing your photo prompts, including camera setups.
 The first prompt I want you to create:
 {}
 Take inspiration from the formatting from the example prompts, don't copy them, but use the same format.
 """
 
-prompt_primer = [
+PROMPT_PRIMER = [
     image_prompt1, image_prompt2,
     image_prompt3, image_prompt4,
     image_prompt5a, image_prompt5b,
