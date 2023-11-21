@@ -6,6 +6,8 @@ Type in a prompt to make an image, and this app will improve upon your prompt us
 
 I assume you are proficient with Python and software development in general.
 
+I do not know what your setup is like, but these steps are a good general guideline.
+
 1) Open ```test.py``` in an IDE of your choice.
 2) Type in ```pip install -r requirements.txt``` in the Terminal. Make sure your Terminal's PWD is the ```openai_image_maker``` directory.
 2) Upload an audio file of your voice prompt to the ```voice_prompts``` folder.
