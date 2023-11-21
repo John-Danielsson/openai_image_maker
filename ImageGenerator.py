@@ -10,13 +10,13 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 class ImageGenerator:
 
-	def __init__(self, model) -> None:
-		self.model = model
-		self.__client = openai.OpenAI()
-		self.__context = []
+	def __init__(self, chat_model) -> None:
+		self.chat_model = chat_model
+		self._client = openai.OpenAI()
+		self._context = []
 		for p in PROMPT_PRIMER:
-			self.__context.append({"role": "system", "content": p})
-		self.__context.append({"role": "user", "content": ""})
+			self._context.append({"role": "system", "content": p})
+		self._context.append({"role": "user", "content": ""})
 
 	def make_image(self, image_prompt, n_images, image_size=0):
 		"""
@@ -27,22 +27,30 @@ class ImageGenerator:
 		Smaller sizes are faster to generate. You can request 1-10 images at a time using
 		the n parameter.
 		"""
-		better_image_prompt = self.make_prompt(image_prompt)
-		image_data = self.get_data(better_image_prompt, n_images, image_size)
+		upgraded_prompt = self._make_prompt(image_prompt)
+		image_data = self._get_image_data(upgraded_prompt, n_images, image_size)
 		return image_data["data"][0]["url"]
 
-	def make_prompt(self, prompt_text):
-		self.__context[-1]["content"] = prompt_text
-		response = self.__client.chat.completions.create(
-			model=self.model,
-			messages=self.__context
+	def _make_prompt(self, prompt_text):
+		self._context[-1]["content"] = prompt_text
+		response = self._client.chat.completions.create(
+			model=self.chat_model,
+			messages=self._context
 		)
 		return response["choices"][0]["message"]["content"]
 
-	def get_data(self, image_prompt, n_images, image_size):
+	def _get_image_data(self, image_prompt, n_images, image_size):
 		data = openai.Image.create(
 			prompt=image_prompt,
 			n=n_images,
 			size=f"{256 * (1 << image_size)}x{256 * (1 << image_size)}"
 		)
 		return data
+
+	def make_image_with_voice(self, audio_file_path):
+		audio_file = open(audio_file_path, "rb")
+		transcript = self._client.audio.translations.create(
+		model="whisper-1", 
+		file=audio_file
+		)
+		return transcript["text"]
