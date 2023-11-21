@@ -1,9 +1,8 @@
 import openai
-
-client = openai.OpenAI()
 import os
 from dotenv import load_dotenv
 from prompt_engineering import main_context, length_restriction, prompt_setup
+
 
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
@@ -156,7 +155,6 @@ class ImageGenerator:
             image_size
         )
         return result
-
 
     def _transcribe(self, audio_file_path):
         """
