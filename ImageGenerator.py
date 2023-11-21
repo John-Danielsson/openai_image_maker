@@ -120,7 +120,7 @@ class ImageGenerator:
         dict
             The data of the generated images.
         """
-        data = client.images.generate(
+        data = self._client.images.generate(
             prompt=image_prompt,
         	n=n_images,
         	size=f"{256 * (1 << image_size)}x{256 * (1 << image_size)}"
