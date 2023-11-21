@@ -97,10 +97,8 @@ class ImageGenerator:
             The refined prompt.
         """
         self._context[-1]["content"] = f"{prompt_setup} \"{prompt_text}\" {length_restriction}"
-        print("\n\nself._context[-1][\"content\"]={}\n\n".format(self._context[-1]["content"]))
         response = self._client.chat.completions.create(
             model=self.chat_model,
-            # response_format={"type": "json_object"},
             messages=self._context
         )
         return response.choices[0].message.content
@@ -132,20 +130,26 @@ class ImageGenerator:
 
     def make_image_voice(self, audio_file_path, n_images, image_size=0):
         """
-        Generates an image based on a voice transcript.
+        Generates an image based on a voice transcript from an audio file.
+
+        This method transcribes the voice from the specified audio file into text 
+        and then generates an image based on this transcription. 
 
         Parameters
         ----------
         audio_file_path : str
-            The file path of the audio file to be transcribed.
+            The file path of the audio file to be transcribed and used for image generation.
+        n_images : int
+            The number of images to generate based on the voice transcript.
+        image_size : int, optional
+            The size of the generated image (default is 0).
 
         Returns
         -------
-        str
-            The transcript of the audio file.
+        result
+            The generated image(s) based on the voice transcript.
         """
         prompt_text = self._transcribe(audio_file_path)
-        print(f"\n\nprompt_text={prompt_text}\n\n")
         result = self.make_image_text(
             prompt_text,
             n_images,
@@ -153,12 +157,27 @@ class ImageGenerator:
         )
         return result
 
+
     def _transcribe(self, audio_file_path):
+        """
+        Transcribes the content of an audio file into text.
+
+        This method uses a specific model to transcribe the content of the given audio file. 
+        The transcription is used for further processing, like generating prompts for image creation.
+
+        Parameters
+        ----------
+        audio_file_path : str
+            The path to the audio file that needs to be transcribed.
+
+        Returns
+        -------
+        str
+            The transcribed text from the audio file.
+        """
         audio_file = open(audio_file_path, "rb")
         transcript = self._client.audio.transcriptions.create(
             model="whisper-1", 
             file=audio_file
         )
-        print("\n\n_transcribe()")
-        print("transcript={transcript}\n\n")
         return transcript.text
