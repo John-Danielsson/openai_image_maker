@@ -53,7 +53,7 @@ class ImageGenerator:
             {"role": "user", "content": ""}
         ]
 
-    def make_image(self, image_prompt, n_images, image_size=0):
+    def make_image_text(self, image_prompt, n_images, image_size=0):
         """
         Generates an image based on the provided prompt.
 
@@ -130,7 +130,7 @@ class ImageGenerator:
         )
         return data
 
-    def make_image_with_voice(self, audio_file_path):
+    def make_image_voice(self, audio_file_path, n_images, image_size=0):
         """
         Generates an image based on a voice transcript.
 
@@ -144,9 +144,21 @@ class ImageGenerator:
         str
             The transcript of the audio file.
         """
+        prompt_text = self._transcribe(audio_file_path)
+        print(f"\n\nprompt_text={prompt_text}\n\n")
+        result = self.make_image_text(
+            prompt_text,
+            n_images,
+            image_size
+        )
+        return result
+
+    def _transcribe(self, audio_file_path):
         audio_file = open(audio_file_path, "rb")
         transcript = self._client.audio.transcriptions.create(
             model="whisper-1", 
             file=audio_file
         )
+        print("\n\n_transcribe()")
+        print("transcript={transcript}\n\n")
         return transcript.text

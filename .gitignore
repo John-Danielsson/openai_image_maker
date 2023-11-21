@@ -1,2 +1,4 @@
 venv
+voice_prompts/test_voice_prompt_1.m4a
+voice_prompts/test_voice_prompt_2.m4a
 .env
