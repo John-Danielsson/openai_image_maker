@@ -1,4 +1,4 @@
-# openai_image_maker
+# OpenAI Image Maker
 
 This app lets you generate images with DALL-E using voice prompts.
 
