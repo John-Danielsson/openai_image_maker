@@ -13,10 +13,10 @@ if __name__ =="__main__":
     # )
     # print(f"test_text=\"{test_text}\"")
 
-    audio_file_path = "voice_prompts/example.m4a"
+    audio_file_path = "voice_prompts/example.mp3"
     test_voice = imageMaker.make_image_voice(
         audio_file_path=audio_file_path,
         n_images=2,
         image_size=1
     )
-    print(f"test_voice=\"{test_voice}\"")
+    print(f"\n\ntest_voice=\"{test_voice}\"\n\n")

@@ -26,7 +26,7 @@ class ImageGenerator:
     make_image(image_prompt, n_images, image_size=0):
         Generates an image based on the provided prompt.
 
-    _make_prompt(prompt_text):
+    _upgrade_prompt(prompt_text):
         Creates and refines a prompt for image generation.
 
     _get_image_data(image_prompt, n_images, image_size):
@@ -74,14 +74,18 @@ class ImageGenerator:
         List[str]
             URL of the generated image.
         """
-        upgraded_prompt = self._make_prompt(image_prompt)
-        image_data = self._get_image_data(upgraded_prompt, n_images, image_size)
+        upgraded_prompt = self._upgrade_prompt(image_prompt)
+        image_data = self._get_image_data(
+            image_prompt=upgraded_prompt,
+            n_images=n_images,
+            image_size=image_size
+        )
         image_urls = []
         for image in image_data.data:
             image_urls.append(image.url)
         return image_urls
 
-    def _make_prompt(self, prompt_text):
+    def _upgrade_prompt(self, prompt_text):
         """
         Creates and refines a prompt for image generation.
 
@@ -148,11 +152,11 @@ class ImageGenerator:
         result
             The generated image(s) based on the voice transcript.
         """
-        prompt_text = self._transcribe(audio_file_path)
+        audio_transcript = self._transcribe(audio_file_path)
         result = self.make_image_text(
-            prompt_text,
-            n_images,
-            image_size
+            image_prompt=audio_transcript,
+            n_images=n_images,
+            image_size=image_size
         )
         return result
 
