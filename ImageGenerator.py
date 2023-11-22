@@ -47,7 +47,7 @@ class ImageGenerator:
         """
         self.chat_model = chat_model
         self._client = openai.OpenAI()
-        self._context = [
+        self.__completions_messages = [
             {"role": "system", "content": main_context},
             {"role": "user", "content": ""}
         ]
@@ -95,10 +95,10 @@ class ImageGenerator:
         str
             The refined prompt.
         """
-        self._context[-1]["content"] = f"{prompt_setup} \"{prompt_text}\" {length_restriction}"
+        self.__completions_messages[-1]["content"] = f"{prompt_setup} \"{prompt_text}\" {length_restriction}"
         response = self._client.chat.completions.create(
             model=self.chat_model,
-            messages=self._context
+            messages=self.__completions_messages
         )
         return response.choices[0].message.content
 
