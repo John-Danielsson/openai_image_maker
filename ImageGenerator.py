@@ -71,7 +71,7 @@ class ImageGenerator:
 
         Returns
         -------
-        str
+        List[str]
             URL of the generated image.
         """
         upgraded_prompt = self._make_prompt(image_prompt)
