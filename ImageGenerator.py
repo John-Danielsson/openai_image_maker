@@ -10,14 +10,14 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 class ImageGenerator:
     """
-    A class used to generate images based on prompts using OpenAI's API.
+    A class used to generate images based on prompts using OpenAI"s API.
 
     Attributes
     ----------
     chat_model : str
         The model identifier used for chat completions.
     _client : openai.OpenAI
-        Client object to interact with OpenAI's API.
+        Client object to interact with OpenAI"s API.
     _context : list
         The context used for generating prompts.
 
@@ -36,7 +36,7 @@ class ImageGenerator:
         Generates an image based on a voice transcript.
     """
 
-    def __init__(self, chat_model) -> None:
+    def __init__(self, chat_model="gpt-3.5-turbo", image_model="dall-e-2") -> None:
         """
         Constructs all the necessary attributes for the ImageGenerator object.
 
@@ -46,6 +46,7 @@ class ImageGenerator:
             The model identifier to be used for chat completions.
         """
         self.chat_model = chat_model
+        self.image_model = image_model
         self._client = openai.OpenAI()
         self.__completions_messages = [
             {"role": "system", "content": main_context},
@@ -74,6 +75,12 @@ class ImageGenerator:
         List[str]
             URL of the generated image.
         """
+        if n_images < 1:
+            raise ValueError("n_images must be at least 1")
+        elif self.image_model == "dall-e-3" and n_images > 1:
+            raise ValueError("n_images must be 1 when self.image_model == \"dall-e-3\"")
+        elif self.image_model == "dall-e-2" and n_images > 10:
+            raise ValueError("n_images must be between 1 and 10 (inclusive) when self.image_model == \"dall-e-2\"")
         upgraded_prompt = self._upgrade_prompt(image_prompt)
         image_data = self._get_image_data(
             image_prompt=upgraded_prompt,
@@ -127,7 +134,7 @@ class ImageGenerator:
         data = self._client.images.generate(
             prompt=image_prompt,
         	n=n_images,
-        	size=f"{256 * (1 << image_size)}x{256 * (1 << image_size)}"
+        	size=image_size
         )
         return data
 
@@ -177,9 +184,59 @@ class ImageGenerator:
         str
             The transcribed text from the audio file.
         """
-        audio_file = open(audio_file_path, "rb")
-        transcript = self._client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_file
-        )
-        return transcript.text
+        if not self.__valid_audio_file(audio_file_path):
+            raise ValueError(f"The file at \"{audio_file_path}\" is not a valid audio file.")
+        with open(audio_file_path, "rb") as audio_file:
+            transcript = self._client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+            return transcript.text
+    
+    def __valid_audio_file(self, audio_file_path):
+        """
+        Validates if the given file path points to a valid audio file.
+
+        This method checks whether the file exists and whether its extension
+        is one of the common audio file formats. It"s a basic validation
+        based on file existence and extension check.
+
+        Note: This method does not validate the content of the file, and 
+        a file passing this validation might still not be a proper audio file.
+
+        Parameters
+        ----------
+        audio_file_path : str
+            The file path to be validated as an audio file.
+
+        Returns
+        -------
+        bool
+            True if the file is a valid audio file, False otherwise.
+        """
+        if not os.path.exists(audio_file_path):
+            return False
+        _, ext = os.path.splitext(audio_file_path)
+        return ext.lower() in ["mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"]
+
+    def set_chat_model(self, chat_model):
+        """
+        Sets the chat model identifier to be used for chat completions.
+
+        Parameters
+        ----------
+        chat_model : str
+            The model identifier (e.g., "gpt-3.5-turbo") to be used for chat completions.
+        """
+        self.chat_model = chat_model
+
+    def set_image_model(self, image_model):
+        """
+        Sets the image model identifier to be used for generating images.
+
+        Parameters
+        ----------
+        image_model : str
+            The model identifier (e.g., "dall-e-2", "dall-e-3") to be used for image generation.
+        """
+        self.image_model = image_model
