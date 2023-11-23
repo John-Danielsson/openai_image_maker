@@ -11,8 +11,8 @@ I do not know what your setup is like, but these steps are a good general guidel
 1) Open ```test.py``` in an IDE of your choice.
 2) Type in ```pip install -r requirements.txt``` in the Terminal. Make sure your Terminal's PWD is the ```openai_image_maker``` directory.
 3) Upload an audio file of your voice prompt to the ```voice_prompts``` folder. From OpenAI documentation: "File uploads are currently limited to 25 MB and the following input file types are supported: ```mp3```, ```mp4```, ```mpeg```, ```mpga```, ```m4a```, ```wav```, and ```webm```." \[[1](https://platform.openai.com/docs/guides/speech-to-text)\]
-4) In ```test.py```, change the line ```audio_file_path = "voice_prompts/example.m4a"``` to the name of
-your newly added voice prompt. The new line should look like this: ```audio_file_path = "voice_prompts/new_example.m4a"```.
+4) In ```test.py```, change the line ```audio_file_path = "voice_prompts/example.extension"``` to the name of
+your newly added voice prompt. The new line should look like this: ```audio_file_path = "voice_prompts/new_example.extension"```.
 5) Make a ```.env``` file with your OpenAI API token in it, in the ```openai_image_maker``` directory. It needs to follow this format:
 
 ```OPENAI_API_KEY=<your API key here>```
