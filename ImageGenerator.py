@@ -51,10 +51,12 @@ class ImageGenerator:
 
         Parameters
         ----------
-        chat_model : str, optional
+        chat_model : str
             The model identifier for chat completions (default is 'gpt-3.5-turbo').
-        image_model : str, optional
+        image_model : str
             The model identifier for image generation (default is 'dall-e-2').
+        client: openai.OpenAI
+            The OpenAI client instance for API interactions.
         """
         self.chat_model = chat_model
         self.image_model = image_model
@@ -184,12 +186,12 @@ class ImageGenerator:
             If the provided audio file is not valid.
         """
         audio_transcript = self._transcribe(audio_file_path)
-        result = self.make_image_text(
+        image_urls = self.make_image_text(
             image_prompt=audio_transcript,
             n_images=n_images,
             image_size=image_size
         )
-        return result
+        return image_urls
 
     def _transcribe(self, audio_file_path: str) -> str:
         """
@@ -214,7 +216,7 @@ class ImageGenerator:
             If the audio file is not valid or cannot be transcribed.
         """
         if not self.__valid_audio_file(audio_file_path):
-            raise ValueError(f"The file at \"{audio_file_path}\" is not a valid audio file.")
+            raise ValueError(f"The file at '{audio_file_path}' is not a valid audio file.")
         with open(audio_file_path, "rb") as audio_file:
             transcript = self._client.audio.transcriptions.create(
                 model="whisper-1", 
