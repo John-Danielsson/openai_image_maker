@@ -1,11 +1,6 @@
 import openai
 import os
-from dotenv import load_dotenv
 from prompt_engineering import main_context, length_restriction, prompt_setup
-
-
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 
 class ImageGenerator:
