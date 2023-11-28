@@ -7,6 +7,7 @@ async-timeout==4.0.3
 asyncio==3.4.3
 attrs==23.1.0
 certifi==2023.11.17
+configure==0.5
 distro==1.8.0
 exceptiongroup==1.1.3
 frozenlist==1.4.0
@@ -16,10 +17,13 @@ httpx==0.25.1
 idna==3.4
 multidict==6.0.4
 openai==1.3.3
+PyAudio==0.2.14
 pydantic==2.5.1
 pydantic_core==2.14.3
 python-dotenv==1.0.0
+PyYAML==6.0.1
 sniffio==1.3.0
 tqdm==4.66.1
 typing_extensions==4.8.0
+websockets==12.0
 yarl==1.9.3
