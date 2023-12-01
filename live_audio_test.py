@@ -7,7 +7,8 @@ import base64
 import json
 from configure import auth_key
 import pyaudio
- 
+import os
+
 
 FRAMES_PER_BUFFER = 3200
 FORMAT = pyaudio.paInt16
@@ -27,13 +28,30 @@ stream = port_audio.open(
 
 # the AssemblyAI endpoint we're going to hit
 # probably need to do OpenAI API instead
-URL = "wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000"
+URL = "https://api.openai.com/v1/whisper/transcribe"
+
+# import requests
+
+# def transcribe_audio(file_path):
+#     api_key = 'YOUR_API_KEY'  # Replace with your API key
+#     headers = {
+#         'Authorization': f'Bearer {api_key}'
+#     }
+#     files = {
+#         'file': open(file_path, 'rb')
+#     }
+#     response = requests.post(
+#         'https://api.openai.com/v1/whisper/transcribe',
+#         headers=headers,
+#         files=files
+#     )
+#     return response.json()
 
 async def send_receive_data():
    print(f'Connecting websocket to url ${URL}')
    async with websockets.connect(
        URL,
-       extra_headers=(("Authorization", "our API key"),),
+       extra_headers=("Authorization": f"Bearer {os.getenv("OPENAI_API_KEY")}"),
        ping_interval=5,
        ping_timeout=20
    ) as _ws:
